@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Task Completion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            animation: backgroundAnimation 10s linear infinite;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background-color: #ff9a9e; }
+            25% { background-color: #fad0c4; }
+            50% { background-color: #fad0c4; }
+            75% { background-color: #ff9a9e; }
+            100% { background-color: #ff9a9e; }
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .points {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-list li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .task-list li.completed {
+            background-color: #d4edda;
+            text-decoration: line-through;
+        }
+
+        .task-list li button {
+            background-color: #28a745;
+            border: none;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task-list li.completed button {
+            background-color: #6c757d;
+        }
+
+        .task-list li button:hover {
+            background-color: #218838;
+        }
+
+        .task-list li.completed button:hover {
+            background-color: #5a6268;
+        }
+
+        .cooldown-message {
+            color: red;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Daily Task Completion</h1>
+    <div class="points">Points: <span id="points">0</span></div>
+    <ul class="task-list">
+        <li>
+            <span>Visit Site 1</span>
+            <button onclick="completeTask(this, 'https://example.com/site1')">Complete</button>
+        </li>
+        <li>
+            <span>Visit Site 2</span>
+            <button onclick="completeTask(this, 'https://example.com/site2')">Complete</button>
+        </li>
+        <li>
+            <span>Visit Site 3</span>
+            <button onclick="completeTask(this, 'https://example.com/site3')">Complete</button>
+        </li>
+        <li>
+            <span>Visit Site 4</span>
+            <button onclick="completeTask(this, 'https://example.com/site4')">Complete</button>
+        </li>
+        <li>
+            <span>Visit Site 5</span>
+            <button onclick="completeTask(this, 'https://example.com/site5')">Complete</button>
+        </li>
+    </ul>
+    <div class="cooldown-message" id="cooldownMessage">
+        You have completed all tasks for today! Please come back tomorrow.
+    </div>
+</div>
+
+<script>
+    const maxTasksPerDay = 5;
+    let points = 0;
+    let tasksCompletedToday = 0;
+
+    function completeTask(button, url) {
+        window.open(url, '_blank');
+
+        const listItem = button.parentElement;
+
+        if (!listItem.classList.contains('completed')) {
+            listItem.classList.add('completed');
+            button.disabled = true;
+            points += 1;
+            tasksCompletedToday += 1;
+            document.getElementById('points').textContent = points;
+            saveData();
+
+            if (tasksCompletedToday >= maxTasksPerDay) {
+                lockTasks();
+            }
+        }
+    }
+
+    function lockTasks() {
+        document.querySelectorAll('.task-list li button').forEach(button => {
+            button.disabled = true;
+        });
+
+        document.getElementById('cooldownMessage').style.display = 'block';
+        localStorage.setItem('lastCompletionDate', new Date().toISOString());
+    }
+
+    function resetTasks() {
+        document.querySelectorAll('.task-list li').forEach(listItem => {
+            listItem.classList.remove('completed');
+            listItem.querySelector('button').disabled = false;
+        });
+
+        tasksCompletedToday = 0;
+        document.getElementById('cooldownMessage').style.display = 'none';
+        document.getElementById('points').textContent = points;
+        saveData();
+    }
+
+    function saveData() {
+        const data = {
+            points: points,
+            tasksCompletedToday: tasksCompletedToday
+        };
+        localStorage.setItem('taskData', JSON.stringify(data));
+    }
+
+    function loadData() {
+        const savedData = JSON.parse(localStorage.getItem('taskData'));
+        if (savedData) {
+            points = savedData.points;
+            tasksCompletedToday = savedData.tasksCompletedToday;
+            document.getElementById('points').textContent = points;
+
+            if (tasksCompletedToday >= maxTasksPerDay) {
+                lockTasks();
+            }
+        }
+
+        const lastCompletionDate = localStorage.getItem('lastCompletionDate');
+        if (lastCompletionDate) {
+            const lastCompletion = new Date(lastCompletionDate);
+            const now = new Date();
+
+            if (now.getDate() !== lastCompletion.getDate() || now - lastCompletion >= 24 * 60 * 60 * 1000) {
+                resetTasks();
+            }
+        }
+    }
+
+    window.onload = function() {
+        loadData();
+    }
+</script>
+
+</body>
+</html>
