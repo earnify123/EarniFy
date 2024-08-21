@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - EarniFy{% endblock %}
+
+{% block content %}
+<h1>Profile</h1>
+<div class="profile-container">
+    <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="User Photo">
+    <h2>{{ user.username }}</h2>
+    <p>Phone: {{ user.phone }}</p>
+    <p>Email: {{ user.email }}</p>
+    <h3>Points: {{ user.points }}</h3>
+    <h3>Referral:</h3>
+    <button>Generate Referral Link</button>
+</div>
+{% endblock %}

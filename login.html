@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - EarniFy{% endblock %}
+
+{% block content %}
+<h1>Login</h1>
+<form action="{{ url_for('login') }}" method="POST">
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" required>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    
+    <button type="submit">Login</button>
+</form>
+<p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Work - EarniFy{% endblock %}
+
+{% block content %}
+<h1>Work</h1>
+<div class="task-container">
+    <div class="task">
+        <h2>Task 1</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <a href="{{ url_for('task1') }}">Complete Task</a>
+    </div>
+    <div class="task">
+        <h2>Task 2</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <a href="{{ url_for('task2') }}">Complete Task</a>
+    </div>
+    <div class="task">
+        <h2>Task 3</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <a href="{{ url_for('task3') }}">Complete Task</a>
+    </div>
+    <div class="button-group">
+        <a href="#">Button 1</a>
+        <a href="#">Button 2</a>
+        <a href="#">Button 3</a>
+    </div>
+</div>
+{% endblock %}
